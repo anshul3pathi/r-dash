@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RDash</string>
+    <string name="lbl_client">client</string>
+    <string name="lbl_job_id">job id</string>
+    <string name="format_number_files">%d Files</string>
+    <string name="format_v_number">V%d</string>
+    <string name="format_upload_time">Uploaded On: %s %s</string>
 </resources>
