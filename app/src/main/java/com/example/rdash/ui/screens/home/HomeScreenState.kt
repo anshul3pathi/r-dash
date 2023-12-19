@@ -28,11 +28,14 @@ data class FileSectionUiState(
 )
 
 data class FileUiState(
+    val id: String,
     val name: String,
     val version: Int,
     val dateOfUpload: String,
     val timeOfUpload: String,
-    val fileType: FileUiType?
+    val fileType: FileUiType?,
+    val fileDownloadProgress: Float? = null,
+    val fileUrl: String? = null
 )
 
 enum class FileUiType(
@@ -61,13 +64,16 @@ fun DesignFilesResponse.toUi(): HomeScreenState.Success {
     )
 }
 
-fun FileResponse.toFileUiState(): FileUiState {
+fun FileResponse.toFileUiState(fileDownloadProgress: Float? = null): FileUiState {
     return FileUiState(
+        id = id,
         name = name,
         version = version,
         dateOfUpload = uploadedAt.toDateIn_d_MMM_yy() ?: "",
         timeOfUpload = uploadedAt.toTimeIn_hh_mm_a() ?: "",
-        fileType = fileType.getFileUiType()
+        fileType = fileType.getFileUiType(),
+        fileDownloadProgress = fileDownloadProgress,
+        fileUrl = fileUrl
     )
 }
 

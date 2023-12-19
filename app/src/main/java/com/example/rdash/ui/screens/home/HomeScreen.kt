@@ -30,12 +30,17 @@ import com.example.rdash.ui.theme.RDashTheme
 @Composable
 fun HomeScreenRoute(viewModel: HomeScreenViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
-    HomeScreen(state = state, onClickExpandIcon = viewModel::onClickExpandSectionIcon)
+    HomeScreen(
+        state = state,
+        onClickFile = viewModel::onClickFile,
+        onClickExpandIcon = viewModel::onClickExpandSectionIcon
+    )
 }
 
 @Composable
 private fun HomeScreen(
     state: HomeScreenState,
+    onClickFile: (fileId: String, fileUrl: String) -> Unit,
     onClickExpandIcon: (sectionTitle: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -45,6 +50,7 @@ private fun HomeScreen(
             HomeScreenState.Loading -> HomeScreen_Loading(modifier = Modifier.fillMaxSize())
             is HomeScreenState.Success -> HomeScreen_Success(
                 state = state,
+                onClickFile = onClickFile,
                 onClickExpandIcon = onClickExpandIcon
             )
         }
@@ -65,6 +71,7 @@ fun HomeScreen_Loading(modifier: Modifier = Modifier) {
 @Composable
 private fun BoxScope.HomeScreen_Success(
     state: HomeScreenState.Success,
+    onClickFile: (fileId: String, fileUrl: String) -> Unit,
     onClickExpandIcon: (sectionTitle: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -103,7 +110,8 @@ private fun BoxScope.HomeScreen_Success(
                             fileVersion = file.version,
                             uploadDate = file.dateOfUpload,
                             uploadTime = file.timeOfUpload,
-                            onClick = { /*TODO*/ }
+                            onClick = { file.fileUrl?.let { onClickFile(file.id, it) } },
+                            fileDownloadProgress = file.fileDownloadProgress
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
@@ -118,6 +126,7 @@ private fun BoxScope.HomeScreen_Success(
 @Composable
 private fun HomeScreen_Success_Preview() {
     val file = FileUiState(
+        id = "id1",
         name = "2D Electrical wiring plan",
         version = 3,
         dateOfUpload = "12 Nov, 21",
@@ -141,7 +150,7 @@ private fun HomeScreen_Success_Preview() {
     RDashTheme {
         Surface {
             Box(modifier = Modifier.fillMaxSize()) {
-                HomeScreen_Success(state = state, onClickExpandIcon = {})
+                HomeScreen_Success(state = state, onClickExpandIcon = {}, onClickFile = {_, _ ->})
             }
         }
     }

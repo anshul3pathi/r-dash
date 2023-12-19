@@ -1,9 +1,14 @@
 package com.example.rdash.di
 
+import android.content.Context
 import com.example.rdash.data.api.DesignFilesApi
+import com.example.rdash.data.file_downloader.FileDownloader
+import com.example.rdash.data.file_downloader.WorkManagerFileDownloader
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -37,5 +42,11 @@ object AppModule  {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFileDownloader(@ApplicationContext context: Context): FileDownloader {
+        return WorkManagerFileDownloader(context = context)
     }
 }
